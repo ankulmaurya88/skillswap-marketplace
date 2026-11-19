@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://127.0.0.1:8000/api/";
+const baseURL =import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api/";
 
 // Separate client to avoid refresh-interceptor loops
 const refreshClient = axios.create({ baseURL });
