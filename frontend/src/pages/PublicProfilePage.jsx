@@ -41,11 +41,7 @@ export default function PublicProfilePage() {
 
   return (
     <main className="container py-4">
-      <Link to="/discover">Back to discovery</Link>
       
-      <Link to={`/exchanges/new/${userId}`} className="btn btn-primary">
-        Request Skill Exchange
-      </Link>
 
       <div className="card p-4 mt-3">
         <h1>{profile.username}</h1>
@@ -62,10 +58,18 @@ export default function PublicProfilePage() {
         <h3 className="h5">About</h3>
         <p>{profile.bio || "No biography available."}</p>
 
+
+        
+
         <button className="btn btn-secondary" disabled>
           Request Skill Exchange — Coming Day 8
         </button>
       </div>
+      <Link to="/discover">Back to discovery</Link>
+
+      <Link to={`/exchanges/new/${userId}`} className="btn btn-primary">
+        Request Skill Exchange
+      </Link>
     </main>
   );
 }

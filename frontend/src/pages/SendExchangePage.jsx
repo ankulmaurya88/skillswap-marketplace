@@ -94,7 +94,7 @@ export default function SendExchangePage() {
 
   return (
     <main className="container py-4">
-      <Link to={`/users/${userId}`}>Back to profile</Link>
+      
 
       <h1 className="mt-3">Request Skill Exchange</h1>
       <p>Send a request to {receiver.username}</p>
@@ -152,6 +152,7 @@ export default function SendExchangePage() {
           {saving ? "Sending..." : "Send Exchange Request"}
         </button>
       </form>
+      <Link to={`/users/${userId}`}>Back to profile</Link>
     </main>
   );
 }

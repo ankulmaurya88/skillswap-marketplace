@@ -24,4 +24,5 @@ urlpatterns = [
     path("api/profile/", include("accounts.profile_urls")),
     path("api/skills/", include("skills.urls")),
     path("api/exchanges/", include("exchanges.urls")),
+    path("api/dashboard/", include("core.dashboard_urls")),
 ]
