@@ -1,10 +1,41 @@
-import AuthPage from "./pages/AuthPage";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-function App() {
-  return <AuthPage />;
+import AuthPage from "./pages/AuthPage";
+import Dashboard from "./pages/Dashboard";
+import ProfilePage from "./pages/ProfilePage";
+import EditProfilePage from "./pages/EditProfilePage";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<AuthPage />} />
+
+      <Route element={<ProtectedRoute />}>
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile/edit" element={<EditProfilePage />} />
+      </Route>
+
+      <Route
+        path="/"
+        element={<Navigate to="/dashboard" replace />}
+      />
+
+      <Route path="*" element={<h2>404 — Page Not Found</h2>} />
+    </Routes>
+  );
 }
 
-export default App;
+
+
+// import AuthPage from "./pages/AuthPage";
+
+// function App() {
+//   return <AuthPage />;
+// }
+
+// export default App;
 
 
 

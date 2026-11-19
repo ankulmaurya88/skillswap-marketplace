@@ -1,63 +1,98 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
-from rest_framework.test import APIClient
+from rest_framework.test import APITestCase
+from rest_framework import status
+
+from accounts.models import UserProfile
 
 
-class AuthenticationTests(TestCase):
+class ProfileAPITests(APITestCase):
     def setUp(self):
-        self.client = APIClient()
-        self.user = get_user_model().objects.create_user(
-            username="testuser",
-            email="test@example.com",
+        User = get_user_model()
+
+        self.rahul = User.objects.create_user(
+            username="rahul",
+            password="TestPass@12345"
+        )
+        self.priya = User.objects.create_user(
+            username="priya",
             password="TestPass@12345"
         )
 
-    def test_login(self):
-        response = self.client.post(
-            "/api/auth/login/",
-            {
-                "username": "testuser",
-                "password": "TestPass@12345"
-            },
-            format="json"
+        UserProfile.objects.create(user=self.rahul)
+        UserProfile.objects.create(
+            user=self.priya,
+            bio="Priya original bio"
         )
+
+    def test_get_profile_without_login(self):
+        response = self.client.get("/api/profile/me/")
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_401_UNAUTHORIZED
+        )
+
+    def test_get_own_profile(self):
+        self.client.force_authenticate(user=self.rahul)
+
+        response = self.client.get("/api/profile/me/")
+
         self.assertEqual(response.status_code, 200)
-        self.assertIn("access", response.data)
-        self.assertIn("refresh", response.data)
+        self.assertEqual(
+            response.data["username"],
+            "rahul"
+        )
 
-    def test_protected_api_without_token(self):
-        response = self.client.get("/api/auth/me/")
-        self.assertEqual(response.status_code, 401)
+    def test_update_own_profile(self):
+        self.client.force_authenticate(user=self.rahul)
 
-    def test_logout_blacklists_refresh_token(self):
-        login = self.client.post(
-            "/api/auth/login/",
+        response = self.client.patch(
+            "/api/profile/me/",
+            {"bio": "I teach Python."},
+            format="json"
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        profile = UserProfile.objects.get(user=self.rahul)
+        self.assertEqual(profile.bio, "I teach Python.")
+
+    def test_cannot_change_profile_owner(self):
+        self.client.force_authenticate(user=self.rahul)
+
+        response = self.client.patch(
+            "/api/profile/me/",
             {
-                "username": "testuser",
-                "password": "TestPass@12345"
+                "user_id": self.priya.id,
+                "username": "hacked",
+                "bio": "New bio"
             },
             format="json"
         )
 
-        access = login.data["access"]
-        refresh = login.data["refresh"]
+        self.assertEqual(response.status_code, 200)
 
-        self.client.credentials(
-            HTTP_AUTHORIZATION=f"Bearer {access}"
+        rahul_profile = UserProfile.objects.get(user=self.rahul)
+        priya_profile = UserProfile.objects.get(user=self.priya)
+
+        self.assertEqual(rahul_profile.user_id, self.rahul.id)
+        self.assertEqual(self.rahul.username, "rahul")
+        self.assertEqual(priya_profile.bio, "Priya original bio")
+
+    def test_public_profile_hides_email(self):
+        response = self.client.get(
+            f"/api/profile/users/{self.priya.id}/"
         )
 
-        logout = self.client.post(
-            "/api/auth/logout/",
-            {"refresh": refresh},
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn("email", response.data)
+
+    def test_bio_length_validation(self):
+        self.client.force_authenticate(user=self.rahul)
+
+        response = self.client.patch(
+            "/api/profile/me/",
+            {"bio": "A" * 1001},
             format="json"
         )
 
-        self.assertEqual(logout.status_code, 204)
-
-        refresh_response = self.client.post(
-            "/api/auth/refresh/",
-            {"refresh": refresh},
-            format="json"
-        )
-
-        self.assertEqual(refresh_response.status_code, 401)
+        self.assertEqual(response.status_code, 400)

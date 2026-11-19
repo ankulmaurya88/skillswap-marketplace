@@ -51,3 +51,64 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "username", "email"]
+
+
+
+from .models import UserProfile
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(
+        source="user.id",
+        read_only=True
+    )
+    username = serializers.CharField(
+        source="user.username",
+        read_only=True
+    )
+    email = serializers.EmailField(
+        source="user.email",
+        read_only=True
+    )
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            "user_id",
+            "username",
+            "email",
+            "headline",
+            "bio",
+            "location",
+            "created_at",
+            "updated_at",
+        ]
+        read_only_fields = [
+            "user_id",
+            "username",
+            "email",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class PublicProfileSerializer(serializers.ModelSerializer):
+    user_id = serializers.IntegerField(
+        source="user.id",
+        read_only=True
+    )
+    username = serializers.CharField(
+        source="user.username",
+        read_only=True
+    )
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            "user_id",
+            "username",
+            "headline",
+            "bio",
+            "location",
+        ]
+        read_only_fields = fields

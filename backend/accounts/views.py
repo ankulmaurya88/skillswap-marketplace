@@ -64,3 +64,41 @@ class LogoutView(APIView):
             )
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
+
+
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, permissions
+
+from .models import UserProfile
+from .serializers import (
+    ProfileSerializer,
+    PublicProfileSerializer,
+)
+
+
+class MyProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ["get", "patch", "head", "options"]
+
+    def get_object(self):
+        profile, created = UserProfile.objects.get_or_create(
+            user=self.request.user
+        )
+        return profile
+
+
+class PublicProfileView(generics.RetrieveAPIView):
+    serializer_class = PublicProfileSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_object(self):
+        return get_object_or_404(
+            UserProfile.objects.select_related("user"),
+            user_id=self.kwargs["user_id"]
+        )
