@@ -10,6 +10,11 @@ from .serializers import (
     UserSkillSerializer
 )
 
+from rest_framework import generics, permissions
+
+from .models import UserSkill
+from .serializers import UserSkillSerializer
+
 
 class SkillListView(generics.ListAPIView):
     serializer_class = SkillSerializer
@@ -59,4 +64,24 @@ class MySkillDeleteView(generics.DestroyAPIView):
     def get_queryset(self):
         return UserSkill.objects.filter(
             user=self.request.user
+        )
+
+
+
+
+
+
+class PublicUserOffersView(generics.ListAPIView):
+    serializer_class = UserSkillSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return (
+            UserSkill.objects
+            .filter(
+                user_id=self.kwargs["user_id"],
+                skill_type="OFFER"
+            )
+            .select_related("skill")
+            .order_by("id")
         )

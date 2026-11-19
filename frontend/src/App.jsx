@@ -9,6 +9,8 @@ import { AuthProvider } from "./context/AuthContext";
 import MySkillsPage from "./pages/MySkillsPage";
 import DiscoverPage from "./pages/DiscoverPage";
 import PublicProfilePage from "./pages/PublicProfilePage";
+import SendExchangePage from "./pages/SendExchangePage";
+import ExchangesPage from "./pages/ExchangesPage";
 
 export default function App() {
   return (
@@ -29,6 +31,10 @@ export default function App() {
       <Route path="/discover" element={<DiscoverPage />} />
 
       <Route path="/users/:userId" element={<PublicProfilePage />} />
+
+      <Route path="/exchanges" element={<ExchangesPage />} />
+      
+    <Route path="/exchanges/new/:userId" element={<SendExchangePage />}/>
 
       <Route path="*" element={<h2>404 — Page Not Found</h2>} />
     </Routes>

@@ -35,7 +35,11 @@ export default function Dashboard() {
         <Link to="/discover" className="btn btn-primary">
         Discover Skills
         </Link>
-        
+
+        <Link to="/exchanges" className="btn btn-primary">
+        My Exchange Requests
+        </Link>
+
       <button onClick={handleLogout}>
         Logout
       </button>
