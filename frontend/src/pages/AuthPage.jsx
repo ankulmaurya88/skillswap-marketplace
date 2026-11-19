@@ -1,90 +1,69 @@
 import { useState } from "react";
-import {
-  registerUser,
-  loginUser,
-  getCurrentUser,
-  logoutUser,
-} from "../services/authService";
+import { Navigate, useNavigate } from "react-router-dom";
+
+import { useAuth } from "../context/AuthContext";
+import { registerUser } from "../services/authService";
 
 export default function AuthPage() {
+  const { user, login } = useAuth();
+  const navigate = useNavigate();
+
   const [mode, setMode] = useState("login");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
   const [form, setForm] = useState({
     username: "",
     email: "",
     password: "",
     password_confirm: "",
   });
-  const [user, setUser] = useState(null);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("");
     setLoading(true);
+    setMessage("");
 
     try {
       if (mode === "register") {
         await registerUser(form);
-        setMessage("Registered! Please log in.");
         setMode("login");
+        setMessage("Account created. Please log in.");
       } else {
-        await loginUser({
+        await login({
           username: form.username,
           password: form.password,
         });
 
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
-        setForm((prev) => ({
-          ...prev,
-          password: "",
-          password_confirm: "",
-        }));
+        navigate("/dashboard", { replace: true });
       }
     } catch (error) {
-      if (mode === "login") logoutUser();
-
       const data = error.response?.data;
       setMessage(
         typeof data?.detail === "string"
           ? data.detail
           : data
             ? JSON.stringify(data)
-            : "Request failed. Check the backend."
+            : "Request failed. Please try again."
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    logoutUser();
-    setUser(null);
-    setMessage("Logged out locally.");
-  };
-
-  if (user) {
-    return (
-      <main>
-        <h1>Welcome, {user.username}!</h1>
-        <p>Email: {user.email}</p>
-        <button onClick={handleLogout}>
-          Logout
-        </button>
-      </main>
-    );
-  }
-
   return (
-    <main style={{ maxWidth: 400, margin: "60px auto" }}>
+    <main style={{ maxWidth: 420, margin: "60px auto" }}>
       <h1>SkillSwap Marketplace</h1>
       <h2>{mode === "login" ? "Login" : "Register"}</h2>
 
@@ -99,8 +78,8 @@ export default function AuthPage() {
 
         {mode === "register" && (
           <input
-            type="email"
             name="email"
+            type="email"
             placeholder="Email"
             value={form.email}
             onChange={handleChange}
@@ -109,8 +88,8 @@ export default function AuthPage() {
         )}
 
         <input
-          type="password"
           name="password"
+          type="password"
           placeholder="Password"
           value={form.password}
           onChange={handleChange}
@@ -119,8 +98,8 @@ export default function AuthPage() {
 
         {mode === "register" && (
           <input
-            type="password"
             name="password_confirm"
+            type="password"
             placeholder="Confirm password"
             value={form.password_confirm}
             onChange={handleChange}
@@ -128,12 +107,12 @@ export default function AuthPage() {
           />
         )}
 
-        <button disabled={loading} type="submit">
+        <button type="submit" disabled={loading}>
           {loading
             ? "Processing..."
             : mode === "login"
-            ? "Login"
-            : "Register"}
+              ? "Login"
+              : "Register"}
         </button>
       </form>
 

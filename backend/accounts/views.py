@@ -27,3 +27,40 @@ class CurrentUserView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
+
+
+class LogoutView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        refresh = request.data.get("refresh")
+
+        if not refresh:
+            raise ValidationError({
+                "refresh": "Refresh token is required."
+            })
+
+        try:
+            token = RefreshToken(refresh)
+
+            if str(token["user_id"]) != str(request.user.pk):
+                return Response(
+                    {"detail": "Invalid token owner."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            token.blacklist()
+
+        except TokenError:
+            return Response(
+                {"detail": "Invalid or expired refresh token."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
