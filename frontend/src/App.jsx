@@ -5,6 +5,10 @@ import Dashboard from "./pages/Dashboard";
 import ProfilePage from "./pages/ProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import MySkillsPage from "./pages/MySkillsPage";
+import DiscoverPage from "./pages/DiscoverPage";
+import PublicProfilePage from "./pages/PublicProfilePage";
 
 export default function App() {
   return (
@@ -14,6 +18,7 @@ export default function App() {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/skills" element={<MySkillsPage />} />
         <Route path="/profile/edit" element={<EditProfilePage />} />
       </Route>
 
@@ -21,6 +26,9 @@ export default function App() {
         path="/"
         element={<Navigate to="/dashboard" replace />}
       />
+      <Route path="/discover" element={<DiscoverPage />} />
+
+      <Route path="/users/:userId" element={<PublicProfilePage />} />
 
       <Route path="*" element={<h2>404 — Page Not Found</h2>} />
     </Routes>

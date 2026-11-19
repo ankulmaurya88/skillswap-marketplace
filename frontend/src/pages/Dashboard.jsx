@@ -28,6 +28,14 @@ export default function Dashboard() {
         My Profile
       </Link>
 
+        <Link to="/skills" className="btn btn-primary">
+        Manage My Skills
+        </Link>
+
+        <Link to="/discover" className="btn btn-primary">
+        Discover Skills
+        </Link>
+        
       <button onClick={handleLogout}>
         Logout
       </button>
