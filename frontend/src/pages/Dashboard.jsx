@@ -4,6 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getDashboardSummary } from "../services/dashboardService";
 
+import PageHeader from "../components/ui/PageHeader";
+import StatCard from "../components/ui/StatCard";
+import StatusBadge from "../components/ui/StatusBadge";
+
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -85,115 +89,183 @@ export default function Dashboard() {
     },
   ];
 
-  return (
-    <main className="container py-4">
-      <header className="d-flex justify-content-between
-        align-items-center mb-4">
-        <div>
-          <h1>SkillSwap Dashboard</h1>
-          <p>Welcome back, {user.username}!</p>
+//   return (
+//     <main className="container py-4">
+//       <header className="d-flex justify-content-between
+//         align-items-center mb-4">
+//         <div>
+//           <h1>SkillSwap Dashboard</h1>
+//           <p>Welcome back, {user.username}!</p>
+//         </div>
+
+//         <button
+//           className="btn btn-outline-danger"
+//           onClick={handleLogout}
+//         >
+//           Logout
+//         </button>
+//       </header>
+
+//       <section aria-label="Marketplace summary">
+//         <div className="row g-3">
+//           {stats.map((stat) => (
+//             <div className="col-md-4" key={stat.label}>
+//               <div className="card p-3 h-100">
+//                 <p className="text-muted mb-2">
+//                   {stat.label}
+//                 </p>
+//                 <h2>{stat.value}</h2>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </section>
+
+//       <nav className="d-flex flex-wrap gap-2 my-4">
+//         <Link to="/profile" className="btn btn-primary">
+//           My Profile
+//         </Link>
+
+//         <Link to="/skills" className="btn btn-primary">
+//           My Skills
+//         </Link>
+
+//         <Link to="/discover" className="btn btn-primary">
+//           Discover Skills
+//         </Link>
+
+//         <Link to="/exchanges" className="btn btn-primary">
+//           Exchange Requests
+//         </Link>
+//       </nav>
+
+//       <section>
+//         <div className="d-flex justify-content-between
+//           align-items-center mb-3">
+//           <h2>Recent Exchange Activity</h2>
+
+//           <Link to="/exchanges">
+//             View All
+//           </Link>
+//         </div>
+
+//         {dashboard.recent_activity.length === 0 ? (
+//           <p>
+//             No exchanges yet. Discover a skill to get started.
+//           </p>
+//         ) : (
+//           <div className="list-group">
+//             {dashboard.recent_activity.map((item) => {
+//               const isSender = item.sender_id === user.id;
+
+//               const partner = isSender
+//                 ? item.receiver_name
+//                 : item.sender_name;
+
+//               return (
+//                 <div
+//                   className="list-group-item"
+//                   key={item.id}
+//                 >
+//                   <div className="d-flex
+//                     justify-content-between">
+//                     <h3 className="h6">
+//                       {partner}
+//                     </h3>
+//                     <span className="badge bg-secondary">
+//                       {item.status}
+//                     </span>
+//                   </div>
+
+//                   <p className="mb-1">
+//                     {item.offered_skill_name}
+//                     {" ↔ "}
+//                     {item.requested_skill_name}
+//                   </p>
+
+//                   <small className="text-muted">
+//                     {isSender ? "Sent request" : "Received request"}
+//                     {" · "}
+//                     {new Date(
+//                       item.created_at
+//                     ).toLocaleDateString()}
+//                   </small>
+//                 </div>
+//               );
+//             })}
+//           </div>
+//         )}
+//       </section>
+//     </main>
+//   );
+
+
+return (
+  <main className="ss-page">
+    <PageHeader
+      title="My Dashboard"
+      description="Your SkillSwap learning overview"
+    />
+
+    <section className="welcome-banner">
+      <h2>Welcome back, {user.username}!</h2>
+      <p>
+        Keep sharing knowledge and discovering new skills.
+      </p>
+      <Link to="/discover" className="btn btn-light">
+        Discover Skills
+      </Link>
+    </section>
+
+    <section className="stats-grid" aria-label="Marketplace statistics">
+      {stats.map((stat) => (
+        <StatCard
+          key={stat.label}
+          label={stat.label}
+          value={stat.value}
+          icon="✦"
+        />
+      ))}
+    </section>
+
+    <section className="ss-panel">
+      <div className="d-flex justify-content-between
+        align-items-center mb-3">
+        <h2 className="ss-panel-title mb-0">
+          Recent Exchanges
+        </h2>
+        <Link to="/exchanges">View All</Link>
+      </div>
+
+      {dashboard.recent_activity.length === 0 ? (
+        <div className="ss-empty">
+          No exchanges yet. Start discovering skills!
         </div>
+      ) : (
+        dashboard.recent_activity.map((item) => {
+          const partner = item.sender_id === user.id
+            ? item.receiver_name
+            : item.sender_name;
 
-        <button
-          className="btn btn-outline-danger"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </header>
-
-      <section aria-label="Marketplace summary">
-        <div className="row g-3">
-          {stats.map((stat) => (
-            <div className="col-md-4" key={stat.label}>
-              <div className="card p-3 h-100">
-                <p className="text-muted mb-2">
-                  {stat.label}
+          return (
+            <div className="activity-row" key={item.id}>
+              <div>
+                <strong>{partner}</strong>
+                <p className="text-muted mb-0">
+                  {item.offered_skill_name}
+                  {" ↔ "}
+                  {item.requested_skill_name}
                 </p>
-                <h2>{stat.value}</h2>
               </div>
+
+              <StatusBadge status={item.status} />
             </div>
-          ))}
-        </div>
-      </section>
-
-      <nav className="d-flex flex-wrap gap-2 my-4">
-        <Link to="/profile" className="btn btn-primary">
-          My Profile
-        </Link>
-
-        <Link to="/skills" className="btn btn-primary">
-          My Skills
-        </Link>
-
-        <Link to="/discover" className="btn btn-primary">
-          Discover Skills
-        </Link>
-
-        <Link to="/exchanges" className="btn btn-primary">
-          Exchange Requests
-        </Link>
-      </nav>
-
-      <section>
-        <div className="d-flex justify-content-between
-          align-items-center mb-3">
-          <h2>Recent Exchange Activity</h2>
-
-          <Link to="/exchanges">
-            View All
-          </Link>
-        </div>
-
-        {dashboard.recent_activity.length === 0 ? (
-          <p>
-            No exchanges yet. Discover a skill to get started.
-          </p>
-        ) : (
-          <div className="list-group">
-            {dashboard.recent_activity.map((item) => {
-              const isSender = item.sender_id === user.id;
-
-              const partner = isSender
-                ? item.receiver_name
-                : item.sender_name;
-
-              return (
-                <div
-                  className="list-group-item"
-                  key={item.id}
-                >
-                  <div className="d-flex
-                    justify-content-between">
-                    <h3 className="h6">
-                      {partner}
-                    </h3>
-                    <span className="badge bg-secondary">
-                      {item.status}
-                    </span>
-                  </div>
-
-                  <p className="mb-1">
-                    {item.offered_skill_name}
-                    {" ↔ "}
-                    {item.requested_skill_name}
-                  </p>
-
-                  <small className="text-muted">
-                    {isSender ? "Sent request" : "Received request"}
-                    {" · "}
-                    {new Date(
-                      item.created_at
-                    ).toLocaleDateString()}
-                  </small>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
-    </main>
-  );
+          );
+        })
+      )}
+    </section>
+  </main>
+);
 }
 
 

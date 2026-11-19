@@ -1,0 +1,328 @@
+/* SkillSwap shared design system */
+
+:root {
+  --ss-primary: #4f46e5;
+  --ss-primary-hover: #4338ca;
+  --ss-bg: #f4f7fb;
+  --ss-card: #ffffff;
+  --ss-text: #17233e;
+  --ss-muted: #64748b;
+  --ss-border: #e2e8f0;
+  --ss-radius: 16px;
+  --ss-shadow: 0 5px 24px rgba(15, 23, 42, .045);
+}
+
+body {
+  background: var(--ss-bg);
+  color: var(--ss-text);
+}
+
+/* Page layout */
+
+.ss-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+}
+
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.page-heading h1 {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  margin: 0 0 7px;
+}
+
+.page-heading p {
+  color: var(--ss-muted);
+  margin: 0;
+}
+
+.page-heading-action {
+  flex-shrink: 0;
+}
+
+/* Welcome banner */
+
+.welcome-banner {
+  padding: 30px;
+  border-radius: 20px;
+  background: linear-gradient(115deg, #4338ca, #6366f1);
+  color: white;
+  margin-bottom: 25px;
+}
+
+.welcome-banner h2 {
+  font-size: clamp(1.4rem, 3vw, 1.85rem);
+  font-weight: 750;
+}
+
+.welcome-banner p {
+  color: #e0e7ff;
+}
+
+/* Stats */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  min-width: 0;
+  background: var(--ss-card);
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius);
+  box-shadow: var(--ss-shadow);
+  padding: 23px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.stat-card:hover,
+.marketplace-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
+}
+
+.stat-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  background: #eef2ff;
+  color: var(--ss-primary);
+  border-radius: 12px;
+  font-size: 21px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.stat-label {
+  color: var(--ss-muted);
+  font-size: .9rem;
+}
+
+/* General cards */
+
+.ss-panel,
+.marketplace-card {
+  background: white;
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius);
+  box-shadow: var(--ss-shadow);
+  padding: 24px;
+}
+
+.marketplace-card {
+  height: 100%;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.ss-panel-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.teacher-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.teacher-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #e0e7ff;
+  color: #4338ca;
+  font-size: 20px;
+  font-weight: 750;
+  display: grid;
+  place-items: center;
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 8px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+/* Forms */
+
+.ss-form-card {
+  max-width: 760px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid var(--ss-border);
+  border-radius: var(--ss-radius);
+  padding: 28px;
+  box-shadow: var(--ss-shadow);
+}
+
+.ss-page .form-control,
+.ss-page .form-select {
+  border: 1px solid #dce3ed;
+  border-radius: 10px;
+  padding: 11px 14px;
+  background-color: white;
+}
+
+.ss-page .form-control:focus,
+.ss-page .form-select:focus {
+  border-color: var(--ss-primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, .12);
+}
+
+.ss-page .btn {
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-weight: 600;
+}
+
+.ss-page .btn-primary {
+  background: var(--ss-primary);
+  border-color: var(--ss-primary);
+}
+
+.ss-page .btn-primary:hover {
+  background: var(--ss-primary-hover);
+  border-color: var(--ss-primary-hover);
+}
+
+/* Exchange status */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 11px;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 750;
+  letter-spacing: .025em;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-accepted {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-cancelled,
+.status-unknown {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* Activity */
+
+.activity-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--ss-border);
+}
+
+.activity-row:last-child {
+  border-bottom: 0;
+}
+
+.ss-empty {
+  text-align: center;
+  padding: 42px 20px;
+  color: var(--ss-muted);
+}
+
+/* Responsive */
+
+@media (max-width: 991px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .teacher-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575px) {
+  .ss-page {
+    padding: 22px 15px 48px;
+  }
+
+  .page-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .teacher-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 17px;
+  }
+
+  .stat-value {
+    font-size: 1.65rem;
+  }
+
+  .ss-panel,
+  .marketplace-card,
+  .ss-form-card {
+    padding: 18px;
+  }
+
+  .welcome-banner {
+    padding: 22px;
+  }
+
+  .activity-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .marketplace-card {
+    transition: none;
+  }
+}

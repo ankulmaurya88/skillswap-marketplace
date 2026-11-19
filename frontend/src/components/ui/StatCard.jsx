@@ -1,0 +1,15 @@
+export default function StatCard({
+  label,
+  value,
+  icon = "✦",
+}) {
+  return (
+    <article className="stat-card">
+      <span className="stat-icon" aria-hidden="true">
+        {icon}
+      </span>
+      <strong className="stat-value">{value}</strong>
+      <span className="stat-label">{label}</span>
+    </article>
+  );
+}

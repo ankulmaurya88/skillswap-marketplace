@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+
 import { discoverUsers } from "../services/discoveryService";
+import PageHeader from "../components/ui/PageHeader";
 
 export default function DiscoverPage() {
   const [query, setQuery] = useState("");
@@ -54,10 +56,15 @@ export default function DiscoverPage() {
   };
 
   return (
-    <main className="container py-4">
-      <h1>Discover Skills</h1>
-      <p>Find people who can teach you new skills.</p>
+    <main className="ss-page">
 
+      {/* PAGE HEADER */}
+      <PageHeader
+        title="Discover Skills"
+        description="Find people who can teach you new skills."
+      />
+
+      {/* SEARCH FORM */}
       <form
         onSubmit={handleSearch}
         className="d-flex gap-2 mb-4"
@@ -75,33 +82,61 @@ export default function DiscoverPage() {
         </button>
       </form>
 
+      {/* LOADING & ERROR */}
       {loading && <p>Searching...</p>}
-      {error && <p role="alert">{error}</p>}
 
+      {error && (
+        <p role="alert" className="text-danger">
+          {error}
+        </p>
+      )}
+
+      {/* SEARCH RESULTS */}
       {!loading && !error && (
         <>
-          <p>{count} teachers found</p>
+          <p className="text-muted mb-3">
+            {count} teachers found
+          </p>
 
-          {users.length === 0 && (
-            <p>No teachers found. Try another skill.</p>
-          )}
+          {users.length === 0 ? (
+            <div className="ss-panel ss-empty">
+              <h3 className="h5">No teachers found</h3>
+              <p>Try searching for another skill.</p>
+            </div>
+          ) : (
+            <div className="teacher-grid">
+              {users.map((user) => (
+                <article
+                  className="marketplace-card"
+                  key={user.id}
+                >
+                  {/* TEACHER HEADER */}
+                  <div className="d-flex align-items-center gap-3 mb-3">
+                    <div className="teacher-avatar">
+                      {user.username.charAt(0).toUpperCase()}
+                    </div>
 
-          <div className="row g-3">
-            {users.map((user) => (
-              <div className="col-md-6" key={user.id}>
-                <div className="card h-100 p-3">
-                  <h2 className="h5">{user.username}</h2>
+                    <div>
+                      <h2 className="h5 mb-1">
+                        {user.username}
+                      </h2>
 
-                  <p>{user.headline || "SkillSwap member"}</p>
+                      <p className="text-muted small mb-0">
+                        {user.headline || "SkillSwap member"}
+                      </p>
+                    </div>
+                  </div>
 
-                  <p className="text-muted">
+                  {/* LOCATION */}
+                  <p className="text-muted small">
                     {user.location || "Location not provided"}
                   </p>
 
-                  <div className="mb-3">
+                  {/* SKILLS */}
+                  <div className="d-flex flex-wrap gap-2 mb-4">
                     {user.offered_skills.map((skill) => (
                       <span
-                        className="badge bg-secondary me-1"
+                        className="skill-chip"
                         key={skill.id}
                       >
                         {skill.name}
@@ -109,38 +144,40 @@ export default function DiscoverPage() {
                     ))}
                   </div>
 
+                  {/* PROFILE LINK */}
                   <Link
+                    className="btn btn-outline-primary w-100"
                     to={`/users/${user.id}`}
-                    className="btn btn-outline-primary mt-auto"
                   >
                     View Profile
                   </Link>
-                </div>
-              </div>
-            ))}
-          </div>
+                </article>
+              ))}
+            </div>
+          )}
 
-          <div className="d-flex gap-2 mt-4">
-            <button
-              className="btn btn-outline-secondary"
-              disabled={page === 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              Previous
-            </button>
+          {/* PAGINATION */}
+          {users.length > 0 && (
+            <div className="d-flex align-items-center gap-3 mt-4">
+              <button
+                className="btn btn-outline-secondary"
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+              >
+                Previous
+              </button>
 
-            <span className="align-self-center">
-              Page {page}
-            </span>
+              <span>Page {page}</span>
 
-            <button
-              className="btn btn-outline-secondary"
-              disabled={!hasNext}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </button>
-          </div>
+              <button
+                className="btn btn-outline-secondary"
+                disabled={!hasNext}
+                onClick={() => setPage((p) => p + 1)}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </>
       )}
     </main>
